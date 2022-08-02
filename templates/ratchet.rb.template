@@ -1,0 +1,43 @@
+# ratchet - https://github.com/sethvargo/ratchet
+class Ratchet < Formula
+    desc "A tool for securing CI/CD workflows with version pinning."
+    homepage "https://github.com/sethvargo/ratchet"
+    version "0.2.1"
+  
+    on_macos do
+      if Hardware::CPU.arm?
+        url "https://github.com/sethvargo/ratchet/releases/download/v#{version}/ratchet_#{version}_darwin_arm64.tar.gz", :using => CurlDownloadStrategy
+        sha256 darwin_arm64
+  
+      end
+      if Hardware::CPU.intel?
+        url "https://github.com/sethvargo/ratchet/releases/download/v#{version}/ratchet_#{version}_darwin_amd64.tar.gz", :using => CurlDownloadStrategy
+        sha256 darwin_intel
+  
+      end
+    end
+  
+    on_linux do
+      if Hardware::CPU.arm? && Hardware::CPU.is_64_bit?
+        url "https://github.com/sethvargo/ratchet/releases/download/v#{version}/ratchet_#{version}_linux_arm64.tar.gz", :using => CurlDownloadStrategy
+        sha256 linux_arm64
+  
+      end
+      if Hardware::CPU.intel?
+        url "https://github.com/sethvargo/ratchet/releases/download/v#{version}/ratchet_#{version}_linux_amd64.tar.gz", :using => CurlDownloadStrategy
+        sha256 linux_intel
+  
+      end
+    end
+
+    livecheck do
+        url :stable
+        strategy :git
+        # regex(/(\d+(?:\.\d+)*)/)
+      end
+
+    def install
+        bin.install "ratchet"
+    end
+  
+  end
