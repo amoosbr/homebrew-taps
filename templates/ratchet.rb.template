@@ -12,7 +12,7 @@ class Ratchet < Formula
       end
       if Hardware::CPU.intel?
         url "https://github.com/sethvargo/ratchet/releases/download/v#{version}/ratchet_#{version}_darwin_amd64.tar.gz", :using => CurlDownloadStrategy
-        sha256 darwin_intel
+        sha256 darwin_amd64
   
       end
     end
@@ -25,7 +25,7 @@ class Ratchet < Formula
       end
       if Hardware::CPU.intel?
         url "https://github.com/sethvargo/ratchet/releases/download/v#{version}/ratchet_#{version}_linux_amd64.tar.gz", :using => CurlDownloadStrategy
-        sha256 linux_intel
+        sha256 linux_amd64
   
       end
     end

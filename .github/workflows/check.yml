@@ -1,0 +1,36 @@
+name: Check latest versions
+
+on:
+  schedule:
+    - cron: "15 1 * * *"
+  workflow_dispatch:
+
+jobs:
+  version_check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        # with:
+        #   token: ${{ secrets.PAT }}
+      - name: Get the latest version of Ratchet
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          export RATCHET_VERSION=$(gh release -R sethvargo/ratchet list --exclude-drafts --limit 1 | awk '{print $1}' | grep -oP "(\d+(:?\.\d+)+)")
+          sed -E -i.bak 's/version \"([[:digit:]]+(:?\.[[:digit:]]+)+)\"/version \"'${RATCHET_VERSION}'\"/' templates/ratchet.rb.template
+          wget -qO "ratchet_darwin_arm64.tar.gz" "https://github.com/sethvargo/ratchet/releases/download/v${RATCHET_VERSION}/ratchet_${RATCHET_VERSION}_darwin_arm64.tar.gz"
+          wget -qO "ratchet_darwin_amd64.tar.gz" "https://github.com/sethvargo/ratchet/releases/download/v${RATCHET_VERSION}/ratchet_${RATCHET_VERSION}_darwin_amd64.tar.gz"
+          wget -qO "ratchet_linux_arm64.tar.gz" "https://github.com/sethvargo/ratchet/releases/download/v${RATCHET_VERSION}/ratchet_${RATCHET_VERSION}_linux_arm64.tar.gz"
+          wget -qO "ratchet_linux_amd64.tar.gz" "https://github.com/sethvargo/ratchet/releases/download/v${RATCHET_VERSION}/ratchet_${RATCHET_VERSION}_linux_amd64.tar.gz"
+          sed -E -i.bak 's/sha256 darwin_arm64/sha256 \"'$(shasum -a 256 ratchet_darwin_arm64.tar.gz | awk '{print $1}')'\"/' templates/ratchet.rb.template
+          sed -E -i.bak 's/sha256 darwin_amd64/sha256 \"'$(shasum -a 256 ratchet_darwin_amd64.tar.gz | awk '{print $1}')'\"/' templates/ratchet.rb.template
+          sed -E -i.bak 's/sha256 linux_arm64/sha256 \"'$(shasum -a 256 ratchet_linux_arm64.tar.gz | awk '{print $1}')'\"/' templates/ratchet.rb.template
+          sed -E -i.bak 's/sha256 linux_amd64/sha256 \"'$(shasum -a 256 ratchet_linux_amd64.tar.gz | awk '{print $1}')'\"/' templates/ratchet.rb.template
+          cp templates/ratchet.rb.template Formula/ratchet.rb
+          echo "RATCHET_VERSION=$RATCHET_VERSION" >> $GITHUB_ENV
+      - name: Add & Commit
+        uses: EndBug/add-and-commit@v9.0.0
+        with:
+          add: "Formula"
+          message: "Ratchet version updated to: ${{ env.RATCHET_VERSION }}"
