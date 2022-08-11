@@ -40,8 +40,8 @@ jobs:
         run: |
           export OPENLENS_VERSION=$(curl -s https://raw.githubusercontent.com/MuhammedKalkan/OpenLens/main/version)
           sed -E -i.bak 's/version \"([[:digit:]]+(:?\.[[:digit:]]+)+)\"/version \"'${OPENLENS_VERSION}'\"/' templates/openlens.rb.template
-          wget -qO "openlens.dmg.sha256" "https://github.com/amoosbr/homebrew-openlens/releases/download/v${OPENLENS_VERSION}/OpenLens-${OPENLENS_VERSION}.dmg.sha256"
-          wget -qO "openlens.arm64.dmg.sha256" "https://github.com/amoosbr/homebrew-openlens/releases/download/v${OPENLENS_VERSION}/OpenLens-${OPENLENS_VERSION}-arm64.dmg.sha256"
+          wget -qO "openlens.dmg.sha256" "https://github.com/MuhammedKalkan/OpenLens/releases/download/v${OPENLENS_VERSION}/OpenLens-${OPENLENS_VERSION}.dmg.sha256"
+          wget -qO "openlens.arm64.dmg.sha256" "https://github.com/MuhammedKalkan/OpenLens/releases/download/v${OPENLENS_VERSION}/OpenLens-${OPENLENS_VERSION}-arm64.dmg.sha256"
           sed -E -i.bak 's/sha256 darwin_amd64/sha256 \"'$(cat openlens.dmg.sha256 | awk '{print $1}')'\"/' templates/openlens.rb.template
           sed -E -i.bak 's/sha256 darwin_arm64/sha256 \"'$(cat openlens.arm64.dmg.sha256 | awk '{print $1}')'\"/' templates/openlens.rb.template
           cp templates/openlens.rb.template Casks/openlens.rb
