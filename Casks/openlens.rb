@@ -1,13 +1,13 @@
 cask "openlens" do
-    version "6.0.0"
+    version "6.0.1"
 
     if OS.mac? && Hardware::CPU.intel?
-      sha256 "a06fb9ed2a8dc6b38d1ec3e64d08188c5f4272f202237ecf971cabe56b9ee1e2"
+      sha256 "510feaa9fae95cee4d77f7bc8568e84e79e88bd561eaeebc059153d17afa4055"
       url "https://github.com/MuhammedKalkan/OpenLens/releases/download/v#{version}/OpenLens-#{version}.dmg"
     end
 
     if OS.mac? && Hardware::CPU.arm?
-      sha256 "4778d3f68f5edbb7cff8f8b8c0cc453c775dede30a91eab59c9ebef99b2ac4c9"
+      sha256 "52e0ce09c151a235898869fab43babebf64816118924065033c078680717e181"
       url "https://github.com/MuhammedKalkan/OpenLens/releases/download/v#{version}/OpenLens-#{version}-arm64.dmg"
     end
 
