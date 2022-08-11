@@ -29,8 +29,8 @@ jobs:
           sed -E -i.bak 's/sha256 linux_amd64/sha256 \"'$(shasum -a 256 ratchet_linux_amd64.tar.gz | awk '{print $1}')'\"/' templates/ratchet.rb.template
           cp templates/ratchet.rb.template Formula/ratchet.rb
           echo "RATCHET_VERSION=$RATCHET_VERSION" >> $GITHUB_ENV
-      - name: Add & Commit
+      - name: Add & Commit Ratchet
         uses: EndBug/add-and-commit@v9.0.0
         with:
-          add: "Formula"
+          add: "Formula/ratchet.rb"
           message: "Ratchet version updated to: ${{ env.RATCHET_VERSION }}"
