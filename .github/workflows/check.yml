@@ -29,8 +29,25 @@ jobs:
           sed -E -i.bak 's/sha256 linux_amd64/sha256 \"'$(shasum -a 256 ratchet_linux_amd64.tar.gz | awk '{print $1}')'\"/' templates/ratchet.rb.template
           cp templates/ratchet.rb.template Formula/ratchet.rb
           echo "RATCHET_VERSION=$RATCHET_VERSION" >> $GITHUB_ENV
-      - name: Add & Commit Ratchet
+      - name: Add & Commit Ratchet Update
         uses: EndBug/add-and-commit@v9.0.0
         with:
           add: "Formula/ratchet.rb"
           message: "Ratchet version updated to: ${{ env.RATCHET_VERSION }}"
+      - name: Get the latest version of OpenLens
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          export OPENLENS_VERSION=$(curl -s https://raw.githubusercontent.com/MuhammedKalkan/OpenLens/main/version)
+          sed -E -i.bak 's/version \"([[:digit:]]+(:?\.[[:digit:]]+)+)\"/version \"'${OPENLENS_VERSION}'\"/' templates/openlens.rb.template
+          wget -qO "openlens.dmg.sha256" "https://github.com/amoosbr/homebrew-openlens/releases/download/v${OPENLENS_VERSION}/OpenLens-${OPENLENS_VERSION}.dmg.sha256"
+          wget -qO "openlens.arm64.dmg.sha256" "https://github.com/amoosbr/homebrew-openlens/releases/download/v${OPENLENS_VERSION}/OpenLens-${OPENLENS_VERSION}-arm64.dmg.sha256"
+          sed -E -i.bak 's/sha256 darwin_amd64/sha256 \"'$(cat openlens.dmg.sha256 | awk '{print $1}')'\"/' templates/openlens.rb.template
+          sed -E -i.bak 's/sha256 darwin_arm64/sha256 \"'$(cat openlens.arm64.dmg.sha256 | awk '{print $1}')'\"/' templates/openlens.rb.template
+          cp templates/openlens.rb.template Casks/openlens.rb
+          echo "OPENLENS_VERSION=$OPENLENS_VERSION" >> $GITHUB_ENV
+      - name: Add & Commit OpenLens
+        uses: EndBug/add-and-commit@v9.0.0
+        with:
+          add: "Casks/openlens.rb"
+          message: "OpenLens version updated to: ${{ env.OPENLENS_VERSION }}"
