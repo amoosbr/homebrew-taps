@@ -17,7 +17,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          export RATCHET_VERSION=$(gh release -R sethvargo/ratchet list --exclude-drafts --limit 1 | awk '{print $1}' | grep -oP "(\d+(:?\.\d+)+)")
+          export RATCHET_VERSION=$(gh release -R sethvargo/ratchet list --exclude-drafts --limit 1 | awk '{print $1}' | grep -oP "(\d+(?:\.\d+)+(?:-\w+)?)")
           sed -E -i.bak 's/version \"([[:digit:]]+(:?\.[[:digit:]]+)+)\"/version \"'${RATCHET_VERSION}'\"/' templates/ratchet.rb.template
           wget -qO "ratchet_darwin_arm64.tar.gz" "https://github.com/sethvargo/ratchet/releases/download/v${RATCHET_VERSION}/ratchet_${RATCHET_VERSION}_darwin_arm64.tar.gz"
           wget -qO "ratchet_darwin_amd64.tar.gz" "https://github.com/sethvargo/ratchet/releases/download/v${RATCHET_VERSION}/ratchet_${RATCHET_VERSION}_darwin_amd64.tar.gz"
